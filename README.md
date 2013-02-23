@@ -1,9 +1,11 @@
 aidingcan
 =========
 
-爱订餐，和伙伴一起订餐
+[爱订餐](http://www.aidingcan.com)，和伙伴一起订餐
 
 #爱订餐是什么
+
+线上地址：http://www.aidingcan.com
 
 爱订餐是使用 Python 编写的，以小组为单位的订餐工具。是NodeJS订餐工具 [餐库](https://github.com/willerce/canku) 的 Python(Flask) 实现，并加入了多城市，多小组功能。
 
