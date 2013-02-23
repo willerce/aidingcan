@@ -1,0 +1,30 @@
+{% extends "info/base.html" %}
+{% block title %}爱订餐 › 反馈建议{% endblock %}
+{% block content %}
+    <h1 id="pt">反馈建议</h1>
+    <div class="block">
+        <div class="main">
+            <div class="entry">
+                <p>爱订餐还小，她刚刚加入这个互联网，在使用过程中，欢迎给我反馈。</p>
+                <p>我的邮箱地址：willerce@gmail.com</p>
+            </div>
+            <!-- Duoshuo Comment BEGIN -->
+            <div class="ds-thread"></div>
+            <script type="text/javascript">
+                var duoshuoQuery = {short_name:"aidingcan"};
+                {% if code %}
+                duoshuoQuery['remote_auth'] = '{{ code }}';
+                {% endif %}
+                (function() {
+                    var ds = document.createElement('script');
+                    ds.type = 'text/javascript';
+                    ds.async = true;
+                    ds.src = 'http://static.duoshuo.com/embed.js';
+                    ds.charset = 'UTF-8';
+                    document.getElementsByTagName('head')[0].appendChild(ds);
+                })();
+            </script>
+            <!-- Duoshuo Comment END -->
+        </div>
+    </div>
+{% endblock %}

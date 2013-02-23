@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% block title %}爱订餐 › 编辑菜单{% endblock %}
+{% block content %}
+    <h1 id="pt">{{ shop.name }} › 编辑菜单</h1>
+    <div class="block">
+        <div class="edit_food">
+            <div class="cate_list">
+                <ul class="list">
+                    {% for category in shop.food_categories %}
+                        <li data-id="{{ category.id }}">
+                            <span>{{ category.name }}</span>
+                            <div class="actions">
+                                <a class="removeCate" data-id="{{ category.id }}" href="javascript:;" class="d" title="删除此分类"><span>x</span></a>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="add_category">
+                    <input type="text" id="cateName" class="txt" name="foodcategory">
+                    <button class="btn" type="button" id="addCate">添加分类</button>
+                </div>
+            </div>
+            <div class="food_list">
+                {% for category in shop.food_categories %}
+                    <form class="update_food" data-id="{{ category.id }}">
+                        <input type="hidden" name="fcid" value="{{ category.id }}"/>
+                        <table>
+                            <thead>
+                            <tr>
+                                <td>菜单名称</td>
+                                <td>价格</td>
+                                <td>送餐时间</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for food in  category.foods %}
+                                <tr>
+                                    <td class="name">
+                                        <input type="hidden" name="id" value="{{ food.id }}">
+                                        <input type="text" name="name" value="{{ food.name }}">
+                                    </td>
+                                    <td class="price"><input type="text" name="price"
+                                                             value="{{ price_format(food.price) }}"></td>
+                                    <td class="week">
+                                        <select name="week" class="old" data-value="{{ food.week }}">
+                                            <option value="0">全部</option>
+                                            <option value="1">星期一</option>
+                                            <option value="2">星期二</option>
+                                            <option value="3">星期三</option>
+                                            <option value="4">星期四</option>
+                                            <option value="5">星期五</option>
+                                            <option value="6">星期六</option>
+                                            <option value="7">星期日</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td class="name">
+                                    <input type="hidden" name="id" value="0"/>
+                                    <input type="text" name="name">
+                                </td>
+                                <td class="price"><input type="text" name="price"></td>
+                                <td class="week">
+                                    <select name="week">
+                                        <option value="0">全部</option>
+                                        <option value="1">星期一</option>
+                                        <option value="2">星期二</option>
+                                        <option value="3">星期三</option>
+                                        <option value="4">星期四</option>
+                                        <option value="5">星期五</option>
+                                        <option value="6">星期六</option>
+                                        <option value="7">星期日</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="2">
+                                    <a class="addRow" data-id="{{ category.id }}" href="javascript:;" class="cr-add">+增加一行</a>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                        <div class="clearfix" style="margin-top: 20px;">
+                            <button onclick="savefood({{ category.id }})" type="button" class="btn">保存此分类菜单</button>
+                        </div>
+                    </form>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <script type="text/javascript">
+        (function () {
+
+            $(".update_food").first().addClass('show');
+            $(".cate_list ul li").first().addClass('current');
+
+            $("#addCate").click(function () {
+                var cate = $("#cateName");
+                if (!cate.val()) {
+                    alert('请输入菜单分类名称');
+                    return false;
+                } else {
+                    $.ajax({
+                        type: 'POST',
+                        url: "/shop/add_category",
+                        data: {"name": cate.val(), "id":{{shop.id}}},
+                        success: function (data) {
+                            $(".cate_list ul").append('<li data-id="' + data.id + '">' +
+                                    '<span>' + cate.val() + '</span><div class="actions">' +
+                                    '<a class="removeCate" data-id="' + data.id + '" href="javascript:;" class="d" title="删除此分类"><span>x</span></a>' +
+                                    '</div></li>');
+                            cate.val("");
+
+                            var rows = '';
+
+                            for (var i = 0; i < 4; i++) {
+                                rows = rows + getRow();
+                            }
+
+                            $(".food_list").append('<form class="update_food" data-id="' + data.id + '"><input type="hidden" name="fcid" value="' + data.id + '"/>' +
+                                    '<table><thead><tr><td>菜单名称</td><td>价格</td><td>送餐时间</td></tr></thead><tbody>' + rows + '</tbody>' +
+                                    '<tfoot><tr><td colspan="2"><a class="addRow" data-id='+ data.id + ' href="javascript:;" class="cr-add">+增加一行</a></td></tr></tfoot></table>' +
+                                    '<div class="clearfix" style="margin-top: 20px;"><button onclick="savefood(' + data.id + ')" type="button" class="btn">保存此分类菜单</button></div></form>')
+                        },
+                        dataType: 'json'
+                    });
+                }
+            });
+
+            $("select.old").each(function (index, item) {
+                $(item).find('option[value="' + $(item).attr('data-value') + '"]').attr("selected", "");
+            });
+
+
+            $('.cate_list .list li').live('click', function(){
+                
+                var id = $(this).attr('data-id');
+
+                $(".food_list .update_food.show").removeClass("show");
+                $(".food_list .update_food[data-id='" + id + "']").addClass("show");
+
+                $(".cate_list ul li.current").removeClass('current');
+                $(".cate_list ul li[data-id='" + id + "']").addClass('current');
+            });
+
+            $('.addRow').live('click', function(even){
+                $(".update_food[data-id='" + $(this).attr('data-id') + "'] table tbody").append(getRow());
+                even.stopPropagation();
+                return false;
+            });
+
+            $('.removeCate').live('click', function(even){
+                even.stopPropagation();
+                var resutl = confirm('确认删除分类吗？');
+                if(!resutl) return false;
+
+                var id = $(this).attr('data-id');
+                $.ajax({
+                    type: "POST",
+                    url: "/shop/remove_category",
+                    data: {id: id},
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data["msg"] == 'success') {
+                            $('.cate_list .list li[data-id="' + id + '"]').remove();
+                            $('.update_food[data-id="' + id + '"]').remove();
+                        } else {
+                        }
+                    }
+                });
+                even.stopPropagation();
+                return false;
+            });
+
+        })();
+
+        function savefood(id) {
+            $.ajax({
+                type: "POST",
+                url: "/shop/update_food",
+                data: $(".update_food[data-id='" + id + "']").serializeArray(),
+                dataType: 'json',
+                success: function (data) {
+                    if (data["msg"] == 'success') {
+                        var rows = '';
+                        for (var i = 0; i < data["fl"].length; i++) {
+                            rows = rows + getRow(data["fl"][i]["id"], data["fl"][i]["name"], data["fl"][i]["price"], data["fl"][i]["week"])
+                        }
+                        rows = rows + getRow();
+                        $(".update_food[data-id='" + id + "'] table tbody").empty().html(rows);
+
+                        $("select.old").each(function (index, item) {
+                            $(item).find('option[value="' + $(item).attr('data-value') + '"]').attr("selected", "");
+                        });
+
+                        alert('保存成功');
+
+
+                    } else {
+                    }
+                }
+            });
+        }
+
+        function getRow() {
+            var id = 0, name = "", price = "", week = "";
+            if (arguments.length == 4) {
+                id = arguments[0];
+                name = arguments[1];
+                price = arguments[2];
+                week = arguments[3];
+            }
+            return '<tr><td class="name"><input type="hidden" name="id" value="' + id + '"><input type="text" name="name" value="' + name + '"></td><td class="price"><input type="text" name="price" value="' + price + '"></td>' +
+                    '<td class="week"><select name="week" class="old" data-value="' + week + '"><option selected="" value="0">全部</option><option value="1">星期一</option><option value="2">星期二</option><option value="3">星期三</option><option value="4">星期四</option><option value="5">星期五</option><option value="6">星期六</option><option value="7">星期日</option></select></td></tr>';
+        }
+    </script>
+{% endblock %}

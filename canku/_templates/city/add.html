@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}爱订餐 › 首页{% endblock %}
+{% block content %}
+    <div id="lm" class="block">
+        <div class="hd">
+            <h1>添加城市</h1>
+        </div>
+        <div class="main">
+            <form action="" method="POST" class="form">
+                <div class="item">
+                    <label for="name">城市名</label>
+                    <input type="text" class="txt" name="name" id="name" />
+                </div>
+                <div class="item">
+                    <label for="submit">&nbsp;</label>
+                    <button id="submit" name="" class="btn">添加</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}爱订餐 › 帐号设置{% endblock %}
+{% block content %}
+    {% if msg %}
+    <div class="alert alert-{{ msg_result }}">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        {{ msg }}
+    </div>
+    {% endif %}
+    <h1 id="pt">帐号信息</h1>
+    <div id="lm" class="block">
+        <div class="main clearfix inner">
+            <form class="form" method="POST" id="account">
+                <div class="item">
+                    <label>头像</label>
+                    <img src="{{ user.figureurl }}"/>
+                    <em></em>
+                </div>
+                <div class="item">
+                    <label for="setting-name">昵称</label>
+                    <input name="nickname" class="txt" id="setting-nickname" type="text" maxlength="32" placeholder="昵称" value="{{ user.nickname }}" required=""/>
+                    <em></em>
+                </div>
+                <div class="item">
+                    <label for="setting-name">真实姓名</label>
+                    <input name="name" class="txt" id="setting-name" type="text" maxlength="32" placeholder="怎么称呼你" value="{{ user.name }}" required=""/>
+                    <em></em>
+                </div>
+                <div class="item">
+                    <label for="setting-submit"></label>
+                    <button class="btn" id="setting-submit" type="submit">修改</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="rm">
+        <div class="block">
+            <div class="title"><h3>为什么要填写真实姓名</h3></div>
+            <div class="main">
+                <ul>
+                    <li>申请加入小组时，让其它成员知道你是谁。</li>
+                    <li>订餐时，让大家知道你订了什么。</li>
+                </ul>
+            </div>
+        </div>
+        <div class="block">
+            <div class="title"><h3>谁会看到我的真实姓名？</h3></div>
+            <div class="main">
+                <ul>
+                    <li>只有你的小组的成员可以看到你的真实姓名</li>
+                    <li>我们承诺保护你的真实姓名不被恶意泄露</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

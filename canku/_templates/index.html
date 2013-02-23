@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}爱订餐，和伙伴一起订餐{% endblock %}
+{% block content %}
+    {% if current_user.group_id %}
+    <h1 id="pt">{{ current_user.group.name }}的小组主页</h1>
+    <div id="lm" class="block">
+        <div class="shop-wp clearfix">
+            {% for shop in shops %}
+                <div class="shop-item" id="{{shop.id}}">
+                    <div class="shop-item-img">
+                        <a href="/shop/{{ shop.id }}"><img alt="{{ shop.name }}" src="/static/img/shop.png"></a>
+                    </div>
+                    <div class="shop-item-text">
+                        <h5><a href="/shop/{{ shop.id }}">{{shop.name}}</a></h5>
+                        <p><span>地址：</span>{{ shop.address }}   <span>电话：</span>{{ shop.tel }}</p>
+                    </div>
+                    <div class="shop-item-do">
+                        <div class="b"><a href="/shop/{{ shop.id }}">订餐</a></div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% if shops.count() == 0%}
+            <div class="main">
+                <p>还未收藏任何餐厅，查看<a href="/shop/explore?city={{ current_user.group.city_id }}">附近的餐厅</a>，或者<a href="/shop/add">添加新的餐厅、菜单</a></p>
+            </div>
+        {% endif %}
+    </div>
+    <div id="rm">
+        <div id="group-nav" class="block bb">
+            <p>› <a href="/today">今日订单</a>，看看大家今天都点了什么</p>
+            <p>› <a href="/shop/explore?city={{ current_user.group.city_id }}">全部餐馆</a>，你周边的店铺</p>
+            <p>› <a href="/shop/add">添加餐馆</a>，录入一份新的餐馆菜单</p>
+        </div>
+    </div>
+    {% else %}
+    <h1 id="pt">欢迎加入爱订餐</h1>
+    <div id="lm" class="join-grou-notice block">
+        <div class="main">
+            <p>你想加入其它同事已经创建好的小组，还是创建一个小组？</p>
+
+            <p style="margin-top:20px;">
+            <a href="/group/explore" class="btn btn-large">加入小组</a>&nbsp;&nbsp;&nbsp;
+            <a href="/group/new" class="btn btn-large">创建小组</a>
+            </p>
+        </div>
+    </div>
+    <div id="rm">
+        <div class="block">
+            <div class="title"><h3>什么是小组？</h3></div>
+            <div class="main">
+                <ul class="list">
+                    <li>在爱订餐里，小组是一个团体单位。是同事、同学之间的聚合。</li>
+                    <li>加入小组后，才可以订餐。你可以看到当天小组成员的订餐状态</li>
+                    <li>每个人只能加入一个小组</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+{% endblock %}

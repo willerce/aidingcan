@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}爱订餐 › 全部小组{% endblock %}
+{% block content %}
+    {% if current_user.group_id %}
+    <div class="block">
+        <div class="hd"><h1>提示</h1></div>
+        <div class="main">
+            <div>只能加入一个小组，你已经加入了{{ current_user.group.name }}小组</div>
+        </div>
+    </div>
+    {% else %}
+    <h1 id="pt">全部小组</h1>
+    <div id="lm" class="block group_list">
+        <div class="cities">
+            {% if city_id == 0 %}
+                <a class="city current" href="?city=0">全部</a>
+            {% else %}
+                <a class="city" href="?city=0">全部</a>
+            {% endif %}
+            {% for city in cities %}
+                {% if city.id == city_id %}
+                <a class="city current" href="?city={{ city.id }}">{{ city.name }}</a>
+                {% else %}
+                <a class="city" href="?city={{ city.id }}">{{ city.name }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="group_list">
+            {% for group in groups %}
+            <div class="item">
+                <img src="/static/img/group.png"/>
+                <h3>{{ group.name }}</h3>
+                <p>地址：{{ group.address }}</p>
+                <p>已经有 {{ group.user_num }} 位成员</p>
+                <form action="/group/join/{{ group.id }}" method="POST">
+                    <input type="hidden" value="{{ group.id }}" name="group_id" />
+                    <button type="submit" class="join btn">加入</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div id="rm" class="block">
+        <div class="hd"><h3>找不到你的小组？</h3></div>
+        <div class="main">
+            <ol>
+                <li>需要与你的同事一起订外卖</li>
+                <li>愿意添加附近的店铺菜单</li>
+                <li>愿意把你添加的店铺分享给附近的小组</li>
+            </ol>
+            <div class="sep10"></div>
+            <p><a href="/group/new" class="btn">创建小组</a></p>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}

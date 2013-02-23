@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}爱订餐 › 创建小组{% endblock %}
+{% block content %}
+    <h1 id="pt">创建小组</h1>
+    <div id="lm" class="block">
+
+        <div class="main">
+            {% if current_user.group_id %}
+                <div>只能加入一个小组，你已经加入了{{ current_user.group.name }}小组</div>
+            {% else %}
+                <form id="addGroup" action="" class="form" method="POST">
+                    <div class="item">
+                        <label for="city">所在城市</label>
+                        <select id="city" class="span2" name="city">
+                            {% for city in cities %}
+                                <option value="{{ city.id }}">{{ city.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <p class="dec">所在城市一旦确定，无法修改。</p>
+                    </div>
+                    <div class="item">
+                        <label for="group-name">小组名称</label>
+                        <input name="name" class="txt" id="group-name" type="text" maxlength="32"/>
+                        <p class="dec">例：网易市场部</p>
+                    </div>
+                    <div class="item" style="display: none">
+                        <label for="group-descrip">小组介绍</label>
+                        <input name="descrip" class="txt span2" id="group-descrip" type="text" value="" maxlength="32"/>
+                    </div>
+                    <div class="item">
+                        <label for="group-address">小组地址</label>
+                        <input name="address" class="txt span4" id="group-address" type="text" maxlength="64"/>
+                        <p class="dec">同时也是送餐地址。例：海淀区中关村东路1号院清华科技园8号楼启迪科技大厦(火炬大厦)D座26层</p>
+                    </div>
+                    <div class="item">
+                        <label for="submit">&nbsp;</label>
+                        <button id="submit" type="submit" class="btn">创建</button>
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+    <div id="rm" class="block">
+        <div class="hd"><h3>小组创建指南</h3></div>
+        <div class="main">
+            <ol>
+                <li>准确填写所在城市、小组名称，可以为你的同事节省搜索时间</li>
+                <li>准确详细的小组地址，可以帮助你快速的找到附近的餐馆</li>
+                <li>加入小组后，你即可为小组所在城市添加新的店铺、菜单</li>
+            </ol>
+        </div>
+    </div>
+    <script type="text/javascript">
+        (function(){
+            $('#addGroup').submit(function(){
+                if($('#group-name').val()==""){
+                    alert('请输入小组名称');
+                    return false;
+                }else if($('#group-address').val()==""){
+                    alert('请输入小组地址');
+                    return false;
+                }else{
+                    return true;
+                }
+            });
+        })()
+    </script>
+{% endblock %}

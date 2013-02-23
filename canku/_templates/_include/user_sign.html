@@ -1,0 +1,15 @@
+{% if current_user.is_authenticated() %}
+    <div class="account">
+        <div>
+            <a href="/account"><em><img src="{{ current_user.figureurl }}" alt="" /></em>{{ current_user.name }}</a>
+        </div>
+        <ul class="account-nav" style="display:none;">
+            <li><a href="/account">帐号信息</a></li>
+            <li id="logout"><a href="/signout">退出</a></li>
+        </ul>
+    </div>
+{% else %}
+    <div class="userlogin">
+        <a href="/signin">登录</a><a href="/signup">注册</a>
+    </div>
+{% endif %}

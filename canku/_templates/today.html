@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}爱订餐 › 今日订单{% endblock %}
+{% block content %}
+    {% if all %}
+        {% for item in all.values() %}
+            <div class="today_shop" id="shop-{{ item["shop"].id }}">
+                <h1 class="hd">
+                    <strong><a href="/shop/{{ item["shop"].id }}">{{ item["shop"].name }}</a></strong>
+                    <span class="shop_tel">电话：{{ item["shop"].tel }}</span>
+                    <span class="shop_address">地址：{{ item["shop"].address }}</span>
+                    <span class="lucker">目测，由<span class="min_luck">{{ item["min_user"].name }}</span>喂人民服务</span>
+                </h1>
+                <section class="main clearfix">
+                    <section class="inner">
+                        <table id="today-list" class="today-tb" cellpadding="0" cellspacing="0">
+                            <thead>
+                            <tr>
+                                <th class="name">用户名</th>
+                                <th class="food">订单内容</th>
+                                <th class="random">运气值</th>
+                                <th class="total">共计</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for order in item["orders"] %}
+                                <tr data-id="{{ order.id }}">
+                                    <td class="name user-{{ order.user.id }}">{{ order.user.name }}</td>
+                                    <td class="food">
+                                        <ul>
+                                            {% for food in json_load(order.text) %}
+                                                <li>{{ food.name }} - {{ food.price }}元 - {{ food.num }} 份</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </td>
+                                    <td class="luck" data-luck="{{ order.luck }}">
+                                        <div class="bar"
+                                             style="width:{{ order.luck *0.95 }}%">{{ order.luck }}</div>
+                                    </td>
+                                    <td class="total">￥{{ order.total }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+
+                        </table>
+                        <table id="today-analytics" class="today-tb">
+                            <thead>
+                            <tr>
+                                <th>统计清单</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for analytics in item["analytics"].values() %}
+                                <tr>
+                                    <td>{{ analytics["name"] }} - {{ analytics["num"] }}份</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+                            <tr style="text-align: right;background: #f9f9f9;">
+                                <td colspan="3">
+                                    <p>共计 <span class="b">{{ item["totalNum"] }}</span> 份， <span
+                                            class="b">{{ item["total"] }}</span> 元</p>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                        <div class="clearfix"></div>
+                    </section>
+                </section>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="main box today_null">
+            <div class="sep20"></div>
+            <div class="inner">
+                <div class="txt">
+                    <h3>大家还没点餐</h3>
+                    <p>可能大伙太忙了，赶紧去群里吼一声，大家快去<a href="/">点餐</a>啊！</p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

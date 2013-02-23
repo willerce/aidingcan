@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}爱订餐 › 浏览餐厅{% endblock %}
+{% block content %}
+    {% if not current_user.group_id %}
+    <h1 id="pt">提示</h1>
+    <div class="block">
+        <div class="main">
+            <div>你没有权限查看，你还未加入小组。<a href="/group/explore">马上加入小组</a></div>
+        </div>
+    </div>
+    {% else %}
+    <h1 id="pt">{{ city.name }}的餐厅</h1>
+    <div class="block">
+        <p>收藏餐厅到小组首页前，爱订餐建议您与餐厅取得联系，确认是否可以安排送餐！</p>
+        <div class="sep20"></div>
+        <div class="shop_list clearfix">
+            {% for shop in shops %}
+                <div id="shop-{{ shop.id }}" class="item">
+                    <img src="/static/img/shop.png"/>
+                    <h3>{{ shop.name }}</h3>
+                    <p>地址：{{ shop.address }}</p>
+                    <div class="star" data-id="{{ shop.id }}" data-stat="0"></div>
+                </div>
+            {% endfor %}
+        </div>
+        <script type="text/javascript">
+            (function () {
+                $.ajax({
+                    url: '/shop/fav_list',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data["msg"] == "success") {
+                            $.each(data["shops"], function (index, item) {
+                                $('.star[data-id="' + item.id + '"]').addClass('fav');
+                            });
+                        }
+                    }
+                });
+                $('.star').click(function () {
+                    var id = $(this).attr('data-id');
+                    $.ajax({
+                        type: "POST",
+                        url: '/shop/fav',
+                        data: {shop_id: id},
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data["msg"] == 'success') {
+                                $(this).attr('data-stat', data['stat']);
+                                console.log("本次结果" + data['stat']);
+                                if (data['stat'] == 0) {
+                                    $('.star[data-id="' + id + '"]').removeClass('fav');
+                                } else {
+                                    $('.star[data-id="' + id + '"]').addClass('fav');
+                                }
+                            } else {
+                                console.log('insert error')
+                            }
+                        }
+                    });
+                });
+            })();
+        </script>
+    </div>
+    {% endif %}
+{% endblock %}
